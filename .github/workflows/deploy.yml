@@ -1,0 +1,29 @@
+name: deploy_homeServer
+
+on:
+  push:
+    branches: [ "depl" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
+
+    - name: Build
+      run: go build -v -o main ./...
+
+    - name: Deploy to home server
+      env:
+        HOST: ${{ secrets.HOST }}
+        USER: ${{ secrets.USER }}
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+        PORT: ${{ secrets.SSH_PORT }}
+      run: |
+        chmod +x ./deploy.sh
+        ./deploy.sh "$HOST" "$USER" "$SSH_KEY" "$PORT"
