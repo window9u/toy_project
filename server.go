@@ -9,14 +9,10 @@ import (
 
 func main() {
 	listenAddr := os.Getenv("LISTEN_ADDR")
-	logPath := os.Getenv("LOG_PATH")
 	if len(listenAddr) == 0 {
 		listenAddr = ":8080"
 	}
-	if len(logPath) == 0 {
-		logPath = "/data/log.txt"
-	}
-	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	logFile, err := os.OpenFile(os.Getenv("LOG_FILE"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

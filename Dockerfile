@@ -33,7 +33,7 @@ EXPOSE 80
 
 # set env
 ENV LISTEN_ADDR=:80
-ENV LOG_PATH = /data/log.txt
+ENV LOG_FILE = log.txt
 
 # command to run the executable
 CMD ["./main"]

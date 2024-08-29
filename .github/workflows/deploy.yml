@@ -47,6 +47,6 @@ jobs:
             docker rm toy-project || true
             docker run -d --name toy-project \
             -p 80:80 \
-            -v ${{ secrets.LOG_PATH }}:/data \
+            -v ${{ secrets.LOG_PATH }}:/app/log.txt \
             --restart unless-stopped \
             $DOCKER_IMAGE
