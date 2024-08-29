@@ -2,7 +2,7 @@ name: deploy_homeServer
 
 on:
   push:
-    branches: ["depl"]
+    branches: ["depl", "*feat"]
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/toy-project
@@ -33,6 +33,16 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:latest
 
+      - name: Copy docker-compose file to remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "docker-compose.yml,nginx.conf"
+          target: "~/deploy"
+
       - name: Execute deployment script on remote server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -40,13 +50,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: DOCKER_IMAGE
           script: |
-            docker pull $DOCKER_IMAGE
-            docker stop toy-project || true
-            docker rm toy-project || true
-            docker run -d --name toy-project \
-            -p 80:80 \
-            -v ${{ secrets.LOG_PATH }}:/app/log.txt \
-            --restart unless-stopped \
-            $DOCKER_IMAGE
+            cd ~/app
+            docker-compose pull
+            docker-compose up -d

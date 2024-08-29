@@ -28,12 +28,5 @@ RUN mkdir -p /data && chmod 755 /data
 # copy the binary from builder
 COPY --from=builder /app/main .
 
-# expose port 80
-EXPOSE 80
-
-# set env
-ENV LISTEN_ADDR=:80
-ENV LOG_FILE = log.txt
-
 # command to run the executable
 CMD ["./main"]
